@@ -3,16 +3,19 @@ import { defineConfig } from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: './',
   plugins: [react()],
   build: {
-    chunkSizeWarningLimit: 1200,
+    chunkSizeWarningLimit: 1400,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
-          'blockly-vendor': ['blockly'],
-          'monaco-vendor': ['@monaco-editor/react'],
-          'ui-vendor': ['react', 'react-dom', 'react-router-dom', 'lucide-react'],
+        manualChunks(id) {
+          if (id.includes('node_modules/three') || id.includes('@react-three')) {
+            return 'three-vendor';
+          }
+          if (id.includes('node_modules/lucide-react')) {
+            return 'icons-vendor';
+          }
         },
       },
     },
